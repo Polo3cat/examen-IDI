@@ -53,6 +53,8 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     GLuint transLoc, projLoc, viewLoc;
     // attribute locations
     GLuint vertexLoc, normalLoc, matambLoc, matdiffLoc, matspecLoc, matshinLoc;
+    //uniform del observador
+    GLuint obsLoc;
 
     // model
     Model patr;

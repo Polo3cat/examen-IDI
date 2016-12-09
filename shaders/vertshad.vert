@@ -12,6 +12,8 @@ uniform mat4 proj;
 uniform mat4 view;
 uniform mat4 TG;
 
+uniform vec3 posObs;
+
 // Valors per als components que necessitem dels focus de llum
 vec3 colFocus = vec3(0.8, 0.8, 0.8);
 vec3 llumAmbient = vec3(0.2, 0.2, 0.2);
@@ -70,6 +72,7 @@ void main()
     mat3 NormalMatrix = inverse (transpose (mat3 (view * TG)));
     vec3 normSCO = normalize (NormalMatrix * normal);
     vec4 vertSCO = normalize (view * TG * vec4 (vertex, 1.0));
+    posFocus = posObs;
     posFocus = normalize (posFocus);
     fcolor = Phong(normSCO, posFocus, vertSCO);
 }
