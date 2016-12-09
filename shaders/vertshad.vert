@@ -58,4 +58,18 @@ void main()
 {	
     fcolor = matdiff;
     gl_Position = proj * view * TG * vec4 (vertex, 1.0);
+
+    //Lambert
+    /*
+    mat3 NormalMatrix = inverse (transpose (mat3 (view * TG)));
+    vec3 normSCO = NormalMatrix * normal;
+    posFocus = posFocus;
+    fcolor = Lambert(normSCO, posFocus);
+    */
+    //Phong
+    mat3 NormalMatrix = inverse (transpose (mat3 (view * TG)));
+    vec3 normSCO = normalize (NormalMatrix * normal);
+    vec4 vertSCO = normalize (view * TG * vec4 (vertex, 1.0));
+    posFocus = normalize (posFocus);
+    fcolor = Phong(normSCO, posFocus, vertSCO);
 }
