@@ -28,7 +28,7 @@ void MyGLWidget::initializeGL ()
   //inicialitzem els paràmetres de la projecció
 
   calculaCapsaModel();
-  OBS = glm::vec3(0.0, 0.0, 1.5 * radiEsc);
+  OBS = glm::vec3(0.0, 0, 1.5 * radiEsc);
   VRP = glm::vec3(0.0, 0.0, 0.0);
   VUP = glm::vec3(0.0, 1.0, 0.0);
 
@@ -39,7 +39,7 @@ void MyGLWidget::initializeGL ()
   d     = sqrt(d);
   znear = (d - radiEsc) / 2.0;
   zfar  = 2 * d + radiEsc;
-  fovi  = 2.0 * asin(alturaPat / 2 / d); // (float)M_PI / 2.0f;
+  fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f;
   fov   = fovi;
   aspect   = 1.0;
   angulo = 0.0;
@@ -54,7 +54,7 @@ void MyGLWidget::initializeGL ()
 
   projectTransform ();
   viewTransform ();
-
+  //definim la posicio de l'observador per al VertexShader
   obsLoc = glGetUniformLocation(program->programId(), "posObs");
   glUniform3f(obsLoc, OBS[0], OBS[1], OBS[2]);
 }
@@ -191,7 +191,7 @@ void MyGLWidget::createBuffers ()
   // Definim el material del terra
   glm::vec3 amb(0,0,1);
   glm::vec3 diff(0,0,1);
-  glm::vec3 spec(0,0,1);
+  glm::vec3 spec(0,0,0);
   float shin = 100;
 
   // Fem que aquest material afecti a tots els vèrtexs per igual
@@ -345,7 +345,7 @@ void MyGLWidget::projectTransform ()
 void MyGLWidget::viewTransform ()
 {
   glm::mat4 View;  // Matriu de posició i orientació
-  View = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, -2*radiEsc));
+  View = glm::translate(glm::mat4(1.f), glm::vec3(0, 0.0, -radiEsc));
   View = glm::rotate(View, -angleY, glm::vec3(0, 1, 0));
 
   View = glm::rotate(View, -psi,  glm::vec3(0, 1, 0));
@@ -380,8 +380,12 @@ void MyGLWidget::calculaCapsaModel ()
   escala = 2.0/(maxy-miny);
   centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
   alturaPat = maxy-miny;
-  vecAlturaPat[0] = 0; vecAlturaPat[1] = maxy-miny; vecAlturaPat[2] = 0.0;
-
+  vecAlturaPat[0] = 0; vecAlturaPat[1] = maxy-miny; vecAlturaPat  [2] = 0.0;
+  float dx, dy, dz;
+  dx = maxx - minx;
+  dy = maxy - miny;
+  dz = maxz - minz;
+  radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent* event) 
