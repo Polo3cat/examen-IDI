@@ -29,6 +29,7 @@ public:
     QHBoxLayout *horizontalLayout;
     MyGLWidget *widget;
     QVBoxLayout *verticalLayout;
+    QPushButton *pushButton_2;
     QSpacerItem *verticalSpacer;
     QPushButton *pushButton;
 
@@ -36,7 +37,7 @@ public:
     {
         if (MyForm->objectName().isEmpty())
             MyForm->setObjectName(QStringLiteral("MyForm"));
-        MyForm->resize(819, 726);
+        MyForm->resize(672, 652);
         horizontalLayout = new QHBoxLayout(MyForm);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         widget = new MyGLWidget(MyForm);
@@ -51,6 +52,11 @@ public:
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        pushButton_2 = new QPushButton(MyForm);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+
+        verticalLayout->addWidget(pushButton_2);
+
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
@@ -70,6 +76,7 @@ public:
 
 
         retranslateUi(MyForm);
+        QObject::connect(pushButton_2, SIGNAL(clicked()), widget, SLOT(canviarModel()));
         QObject::connect(pushButton, SIGNAL(clicked()), MyForm, SLOT(close()));
 
         QMetaObject::connectSlotsByName(MyForm);
@@ -78,6 +85,7 @@ public:
     void retranslateUi(QWidget *MyForm)
     {
         MyForm->setWindowTitle(QApplication::translate("MyForm", "Form", 0));
+        pushButton_2->setText(QApplication::translate("MyForm", "Canviar Model", 0));
         pushButton->setText(QApplication::translate("MyForm", "&Sortir", 0));
     } // retranslateUi
 

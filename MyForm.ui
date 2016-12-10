@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>819</width>
-    <height>726</height>
+    <width>672</width>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,13 @@
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Canviar Model</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
@@ -62,10 +69,29 @@
    <extends>QWidget</extends>
    <header>MyGLWidget.h</header>
    <container>1</container>
+   <slots>
+    <slot>canviarModel()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>canviarModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>633</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>114</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>pushButton</sender>
    <signal>clicked()</signal>
@@ -73,12 +99,12 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>796</x>
-     <y>596</y>
+     <x>607</x>
+     <y>630</y>
     </hint>
     <hint type="destinationlabel">
-     <x>839</x>
-     <y>529</y>
+     <x>335</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>

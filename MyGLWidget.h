@@ -90,5 +90,10 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     glm::vec3 VUP;
 
     glm::vec3 vecAlturaPat;
+
+    bool patricio; //indica el modelo a usar, patricio o cow
+
+public slots:
+    void canviarModel();
 };
 

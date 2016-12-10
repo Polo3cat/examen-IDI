@@ -57,6 +57,8 @@ void MyGLWidget::initializeGL ()
   //definim la posicio de l'observador per al VertexShader
   obsLoc = glGetUniformLocation(program->programId(), "posObs");
   glUniform3f(obsLoc, OBS[0], OBS[1], OBS[2]);
+
+  patricio = true;
 }
 
 void MyGLWidget::paintGL () 
@@ -377,7 +379,7 @@ void MyGLWidget::calculaCapsaModel ()
     if (patr.vertices()[i+2] > maxz)
       maxz = patr.vertices()[i+2];
   }
-  escala = 2.0/(maxy-miny);
+  escala = 2 / (maxy-miny);
   centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
   alturaPat = maxy-miny;
   vecAlturaPat[0] = 0; vecAlturaPat[1] = maxy-miny; vecAlturaPat  [2] = 0.0;
@@ -451,4 +453,66 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *e)
   update ();
 }
 
+void MyGLWidget::canviarModel()
+{
+  makeCurrent();
+  patricio = !patricio;
+  if (patricio)
+    patr.load("./models/Patricio.obj");
+  else
+    patr.load("./models/cow.obj");
+  
+  // Creació del Vertex Array Object del Patricio
+  glBindVertexArray(VAO_Patr);
+
+  // Creació dels buffers del model patr
+  // Buffer de posicions
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrPos);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3*3, patr.VBO_vertices(), GL_STATIC_DRAW);
+
+  // Activem l'atribut vertexLoc
+  glVertexAttribPointer(vertexLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(vertexLoc);
+
+  // Buffer de normals
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrNorm);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3*3, patr.VBO_normals(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(normalLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(normalLoc);
+
+  // En lloc del color, ara passem tots els paràmetres dels materials
+  // Buffer de component ambient
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrMatamb);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3*3, patr.VBO_matamb(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(matambLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(matambLoc);
+
+  // Buffer de component difusa
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrMatdiff);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3*3, patr.VBO_matdiff(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(matdiffLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(matdiffLoc);
+
+  // Buffer de component especular
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrMatspec);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3*3, patr.VBO_matspec(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(matspecLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(matspecLoc);
+
+  // Buffer de component shininness
+  glBindBuffer(GL_ARRAY_BUFFER, VBO_PatrMatshin);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*patr.faces().size()*3, patr.VBO_matshin(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(matshinLoc, 1, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(matshinLoc);
+
+  calculaCapsaModel ();
+  projectTransform ();
+  viewTransform ();
+  update();
+}
 
