@@ -46,6 +46,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     void modelTransformaCow ();
     void modelTransformaCow2 ();
     void radiEscDependent ();
+    inline float calculaRadiEscena (float dx, float dy, float dz);
 
     // VAO i VBO names
     GLuint VAO_Patr, VBO_PatrPos, VBO_PatrNorm, VBO_PatrMatamb, VBO_PatrMatdiff, VBO_PatrMatspec, VBO_PatrMatshin;
@@ -96,6 +97,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     glm::vec3 vecAlturaPat;
 
     bool patricio; //indica el modelo a usar, patricio o cow
+    bool initEsc;
 
 public slots:
     void canviarModel();

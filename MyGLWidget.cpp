@@ -22,14 +22,14 @@ void MyGLWidget::initializeGL ()
 {
   patricio = true;
   deltaF = 0.1;
+  initEsc = true;
   // Cal inicialitzar l'ús de les funcions d'OpenGL
   initializeOpenGLFunctions();  
   glEnable(GL_DEPTH_TEST);
   carregaShaders();
   createBuffers();
   //inicialitzem els paràmetres de la projecció
-
-  calculaCapsaModel();
+  calculaCapsaModel ();
   radiEscDependent ();
 
   VRP = glm::vec3(0.0, 0.0, 0.0);
@@ -117,9 +117,6 @@ void MyGLWidget::createBuffers ()
 {
   // Carreguem el model de l'OBJ - Atenció! Abans de crear els buffers!
   patr.load("./models/Patricio.obj");
-
-  // Calculem la capsa contenidora del model
-  calculaCapsaModel ();
   
   // Creació del Vertex Array Object del Patricio
   glGenVertexArrays(1, &VAO_Patr);
@@ -417,21 +414,21 @@ void MyGLWidget::calculaCapsaModel ()
     if (patr.vertices()[i+2] > maxz)
       maxz = patr.vertices()[i+2];
   }
-
   centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
+  if (initEsc) {
+    float dx, dy, dz;
+    dx = maxx - minx;
+    dy = maxy - miny;
+    dz = maxz - minz;
+    radiEsc = calculaRadiEscena(dx, dy, dz);
+    initEsc = false;
+  }
   if (patricio) {
     escala = 2 / (maxy-miny);
     alturaPat = maxy-miny;
     vecAlturaPat[0] = 0.0; 
     vecAlturaPat[1] = alturaPat; 
-    vecAlturaPat[2] = 0.0;
-    float dx, dy, dz;
-    dx = maxx - minx;
-    dy = maxy - miny;
-    dz = maxz - minz;
-    radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
-    radiEscDependent ();
-    
+    vecAlturaPat[2] = 0.0;    
   } else {
     escala = 2 / (maxz-minz);
     alturaPat = maxz-minz;
@@ -439,6 +436,11 @@ void MyGLWidget::calculaCapsaModel ()
     vecAlturaPat[1] = 0.0; 
     vecAlturaPat[2] = alturaPat;
   }
+}
+
+inline float MyGLWidget::calculaRadiEscena (float dx, float dy, float dz)
+{
+    return sqrt(dx * dx + dy * dy + dz * dz) / 2;
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent* event) 
