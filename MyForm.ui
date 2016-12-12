@@ -33,18 +33,33 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="verticalSpacer">
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QSlider" name="verticalSlider">
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="minimum">
+        <number>31</number>
+       </property>
+       <property name="maximum">
+        <number>314</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
+       <property name="invertedAppearance">
+        <bool>false</bool>
        </property>
-      </spacer>
+       <property name="tickPosition">
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
@@ -70,7 +85,9 @@
    <header>MyGLWidget.h</header>
    <container>1</container>
    <slots>
+    <signal>fovCanviat(int)</signal>
     <slot>canviarModel()</slot>
+    <slot>canviarFov(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -105,6 +122,38 @@
     <hint type="destinationlabel">
      <x>335</x>
      <y>325</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>canviarFov(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>618</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>fovCanviat(int)</signal>
+   <receiver>verticalSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>480</x>
+     <y>244</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>611</x>
+     <y>247</y>
     </hint>
    </hints>
   </connection>

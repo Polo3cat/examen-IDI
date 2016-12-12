@@ -16,7 +16,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "MyGLWidget.h"
@@ -30,7 +30,7 @@ public:
     MyGLWidget *widget;
     QVBoxLayout *verticalLayout;
     QPushButton *pushButton_2;
-    QSpacerItem *verticalSpacer;
+    QSlider *verticalSlider;
     QPushButton *pushButton;
 
     void setupUi(QWidget *MyForm)
@@ -57,9 +57,18 @@ public:
 
         verticalLayout->addWidget(pushButton_2);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSlider = new QSlider(MyForm);
+        verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
+        verticalSlider->setMouseTracking(false);
+        verticalSlider->setLayoutDirection(Qt::LeftToRight);
+        verticalSlider->setMinimum(31);
+        verticalSlider->setMaximum(314);
+        verticalSlider->setSingleStep(1);
+        verticalSlider->setOrientation(Qt::Vertical);
+        verticalSlider->setInvertedAppearance(false);
+        verticalSlider->setTickPosition(QSlider::NoTicks);
 
-        verticalLayout->addItem(verticalSpacer);
+        verticalLayout->addWidget(verticalSlider, 0, Qt::AlignHCenter);
 
         pushButton = new QPushButton(MyForm);
         pushButton->setObjectName(QStringLiteral("pushButton"));
@@ -78,6 +87,8 @@ public:
         retranslateUi(MyForm);
         QObject::connect(pushButton_2, SIGNAL(clicked()), widget, SLOT(canviarModel()));
         QObject::connect(pushButton, SIGNAL(clicked()), MyForm, SLOT(close()));
+        QObject::connect(verticalSlider, SIGNAL(valueChanged(int)), widget, SLOT(canviarFov(int)));
+        QObject::connect(widget, SIGNAL(fovCanviat(int)), verticalSlider, SLOT(setValue(int)));
 
         QMetaObject::connectSlotsByName(MyForm);
     } // setupUi

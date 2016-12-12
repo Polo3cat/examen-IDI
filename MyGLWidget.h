@@ -64,7 +64,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     // radi de l'escena
     float radiEsc;
 
-    typedef  enum {NONE, ROTATE} InteractiveAction;
+    typedef  enum {NONE, ROTATE, ZOOM} InteractiveAction;
     InteractiveAction DoingInteractive;
     int xClick, yClick;
     float angleY;
@@ -78,6 +78,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     float zfar;
     float angulo;
     float deltaA;
+    float deltaF;
 
     float theta;
     float psi;
@@ -95,5 +96,9 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 
 public slots:
     void canviarModel();
+    void canviarFov(int sfov);
+
+signals:
+    void fovCanviat(int wfov);
 };
 

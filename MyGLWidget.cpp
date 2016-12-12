@@ -41,6 +41,7 @@ void MyGLWidget::initializeGL ()
   zfar  = 2 * d + radiEsc;
   fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f;
   fov   = fovi;
+  emit fovCanviat((int)fov * 100);
   aspect   = 1.0;
   angulo = 0.0;
   deltaA = M_PI / 180.0;
@@ -59,6 +60,7 @@ void MyGLWidget::initializeGL ()
   glUniform3f(obsLoc, OBS[0], OBS[1], OBS[2]);
 
   patricio = true;
+  deltaF = 0.1;
 }
 
 void MyGLWidget::paintGL () 
@@ -98,6 +100,7 @@ void MyGLWidget::resizeGL (int w, int h)
   if (rViewport < 1.0) {
     fov = 2.0 * atan(tan(fovi/2.0)/rViewport);
   }
+  emit fovCanviat((int)fov*100);
   glViewport(0, 0, w, h);
   projectTransform ();
 }
@@ -413,6 +416,10 @@ void MyGLWidget::mousePressEvent (QMouseEvent *e)
       ! (e->modifiers() & (Qt::ShiftModifier|Qt::AltModifier|Qt::ControlModifier)))
   {
     DoingInteractive = ROTATE;
+  } else if (e->button() & Qt::RightButton &&
+    ! (e->modifiers() & (Qt::ShiftModifier|Qt::AltModifier|Qt::ControlModifier))) 
+  {
+    DoingInteractive = ZOOM;
   }
 }
 
@@ -445,6 +452,19 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *e)
     // Fem la rotació
     angleY += (e->x() - xClick) * M_PI / 180.0;
     viewTransform ();
+    //Cas de Zoom
+  } else if (DoingInteractive == ZOOM) {
+      if (e->y() > yClick) {
+        fov += deltaF;
+      } else if (e->y() < yClick) {
+        fov -= deltaF;
+      }
+      if (fov > (float)M_PI)
+        fov = (float)M_PI;
+      else if (fov < (float)M_PI/10) 
+        fov = (float)M_PI/10;
+      projectTransform();
+      emit fovCanviat((int)fov * 100);
   }
 
   xClick = e->x();
@@ -461,6 +481,8 @@ void MyGLWidget::canviarModel()
     patr.load("./models/Patricio.obj");
   else
     patr.load("./models/cow.obj");
+
+  calculaCapsaModel ();
   
   // Creació del Vertex Array Object del Patricio
   glBindVertexArray(VAO_Patr);
@@ -510,9 +532,17 @@ void MyGLWidget::canviarModel()
   glVertexAttribPointer(matshinLoc, 1, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(matshinLoc);
 
-  calculaCapsaModel ();
+  
   projectTransform ();
   viewTransform ();
+  update();
+}
+
+void MyGLWidget::canviarFov(int sfov) 
+{
+  makeCurrent();
+  fov = (float)sfov / 100.0f;
+  projectTransform();
   update();
 }
 
