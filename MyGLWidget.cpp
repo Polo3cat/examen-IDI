@@ -408,7 +408,7 @@ void MyGLWidget::calculaCapsaModel ()
     if (patr.vertices()[i+2] > maxz)
       maxz = patr.vertices()[i+2];
   }
-<<<<<<< Updated upstream
+
   centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
   if (patricio) {
     escala = 2 / (maxy-miny);
@@ -422,21 +422,6 @@ void MyGLWidget::calculaCapsaModel ()
     alturaPat = maxz-minz;
     vecAlturaPat[0] = 0.0; 
     vecAlturaPat[1] = maxz-minz; 
-=======
-  
-  centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
-  if (patricio){
-    alturaPat = maxy-miny;
-    escala = 2 / (maxy-miny);
-    vecAlturaPat[0] = 0; 
-    vecAlturaPat[1] = maxy-miny; 
-    vecAlturaPat[2] = 0.0;
-  } else {
-    alturaPat = maxz - minz;
-    escala = 2 / (maxz - minz);
-    vecAlturaPat[0] = 0; 
-    vecAlturaPat[1] = maxz - minz; 
->>>>>>> Stashed changes
     vecAlturaPat[2] = 0.0;
   }
 
