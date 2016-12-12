@@ -20,6 +20,8 @@ MyGLWidget::~MyGLWidget ()
 
 void MyGLWidget::initializeGL ()
 {
+  patricio = true;
+  deltaF = 0.1;
   // Cal inicialitzar l'ús de les funcions d'OpenGL
   initializeOpenGLFunctions();  
   glEnable(GL_DEPTH_TEST);
@@ -58,9 +60,6 @@ void MyGLWidget::initializeGL ()
   //definim la posicio de l'observador per al VertexShader
   obsLoc = glGetUniformLocation(program->programId(), "posObs");
   glUniform3f(obsLoc, OBS[0], OBS[1], OBS[2]);
-
-  patricio = true;
-  deltaF = 0.1;
 }
 
 void MyGLWidget::paintGL () 
@@ -78,15 +77,19 @@ void MyGLWidget::paintGL ()
 
   // Activem el VAO per a pintar el Patricio
   glBindVertexArray (VAO_Patr);
-
-  modelTransformPatricio ();
-
+  if (patricio)
+    modelTransformPatricio ();
+  else
+    modelTransformaCow ();
 
 
   // Pintem l'escena
   glDrawArrays(GL_TRIANGLES, 0, patr.faces().size()*3);
 
-  modelTransformPatricio2 ();
+ if (patricio) 
+    modelTransformPatricio2 ();
+  else
+    modelTransformaCow2 ();
 
   glDrawArrays(GL_TRIANGLES, 0, patr.faces().size()*3);
   
@@ -321,7 +324,7 @@ void MyGLWidget::modelTransformPatricio2 ()
   float rotacio = 180.0f * M_PI / 180.0f;
   TG = glm::scale(TG, glm::vec3(escala, escala, escala));
   TG = glm::rotate(TG, rotacio, glm::vec3(0, 0, 1));
-  TG = glm::translate(TG, -centrePatr );
+  TG = glm::translate(TG, -centrePatr);
   TG = glm::translate(TG, -vecAlturaPat);
 
   
@@ -333,6 +336,29 @@ void MyGLWidget::modelTransformPatricio2 ()
 void MyGLWidget::modelTransformTerra ()
 {
   glm::mat4 TG(1.f);  // Matriu de transformació
+  glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
+}
+
+void MyGLWidget::modelTransformaCow ()
+{
+  glm::mat4 TG(1.f);
+  float rotacio;
+  TG = glm::scale(TG, glm::vec3(escala, escala, escala));
+  rotacio  = 90.0f * M_PI / 180.0f; 
+  TG = glm::rotate(TG, rotacio, glm::vec3(1, 0, 0));
+  TG = glm::rotate(TG, rotacio, glm::vec3(0, 1, 0));
+  TG = glm::translate(TG, -centrePatr);
+
+  glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
+}
+
+void MyGLWidget::modelTransformaCow2 ()
+{
+  glm::mat4 TG(1.f);
+  TG = glm::scale(TG, glm::vec3(escala, escala, escala));
+  TG = glm::translate(TG, -centrePatr);
+
+
   glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
 }
 
@@ -382,15 +408,55 @@ void MyGLWidget::calculaCapsaModel ()
     if (patr.vertices()[i+2] > maxz)
       maxz = patr.vertices()[i+2];
   }
-  escala = 2 / (maxy-miny);
+<<<<<<< Updated upstream
   centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
-  alturaPat = maxy-miny;
-  vecAlturaPat[0] = 0; vecAlturaPat[1] = maxy-miny; vecAlturaPat  [2] = 0.0;
+  if (patricio) {
+    escala = 2 / (maxy-miny);
+    alturaPat = maxy-miny;
+    vecAlturaPat[0] = 0.0; 
+    vecAlturaPat[1] = maxy-miny; 
+    vecAlturaPat[2] = 0.0;
+    
+  } else {
+    escala = 2 / (maxz-minz);
+    alturaPat = maxz-minz;
+    vecAlturaPat[0] = 0.0; 
+    vecAlturaPat[1] = maxz-minz; 
+=======
+  
+  centrePatr[0] = (minx+maxx)/2.0; centrePatr[1] = (miny+maxy)/2.0; centrePatr[2] = (minz+maxz)/2.0;
+  if (patricio){
+    alturaPat = maxy-miny;
+    escala = 2 / (maxy-miny);
+    vecAlturaPat[0] = 0; 
+    vecAlturaPat[1] = maxy-miny; 
+    vecAlturaPat[2] = 0.0;
+  } else {
+    alturaPat = maxz - minz;
+    escala = 2 / (maxz - minz);
+    vecAlturaPat[0] = 0; 
+    vecAlturaPat[1] = maxz - minz; 
+>>>>>>> Stashed changes
+    vecAlturaPat[2] = 0.0;
+  }
+
   float dx, dy, dz;
   dx = maxx - minx;
   dy = maxy - miny;
   dz = maxz - minz;
   radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
+
+  OBS = glm::vec3(0.0, 0, 1.5 * radiEsc);
+  float d = 0;
+  for (int i = 0; i < 3; i += 1){
+    d = d + (OBS[i] - VRP[i]) * (OBS[i] - VRP[i]); //vectores en mayusculas
+  }
+  d     = sqrt(d);
+  znear = (d - radiEsc) / 2.0;
+  zfar  = 2 * d + radiEsc;
+  fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f;
+  fov   = fovi;
+  emit fovCanviat((int)fov * 100);
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent* event) 
@@ -536,7 +602,7 @@ void MyGLWidget::canviarModel()
   projectTransform ();
   viewTransform ();
   update();
-}
+} 
 
 void MyGLWidget::canviarFov(int sfov) 
 {
