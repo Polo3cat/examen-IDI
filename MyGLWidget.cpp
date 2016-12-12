@@ -30,18 +30,10 @@ void MyGLWidget::initializeGL ()
   //inicialitzem els paràmetres de la projecció
 
   calculaCapsaModel();
-  OBS = glm::vec3(0.0, 0, 1.5 * radiEsc);
+  radiEscDependent ();
+
   VRP = glm::vec3(0.0, 0.0, 0.0);
   VUP = glm::vec3(0.0, 1.0, 0.0);
-
-  float d = 0;
-  for (int i = 0; i < 3; i += 1){
-    d = d + (OBS[i] - VRP[i]) * (OBS[i] - VRP[i]); //vectores en mayusculas
-  }
-  d     = sqrt(d);
-  znear = (d - radiEsc) / 2.0;
-  zfar  = 2 * d + radiEsc;
-  fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f;
   fov   = fovi;
   emit fovCanviat((int)fov * 100);
   aspect   = 1.0;
@@ -60,6 +52,19 @@ void MyGLWidget::initializeGL ()
   //definim la posicio de l'observador per al VertexShader
   obsLoc = glGetUniformLocation(program->programId(), "posObs");
   glUniform3f(obsLoc, OBS[0], OBS[1], OBS[2]);
+}
+
+void MyGLWidget::radiEscDependent ()
+{
+  OBS = glm::vec3(0.0, 0, 1.5 * radiEsc);
+   float d = 0;
+  for (int i = 0; i < 3; i += 1){
+    d = d + (OBS[i] - VRP[i]) * (OBS[i] - VRP[i]); //vectores en mayusculas
+  }
+  d     = sqrt(d);
+  znear = (d - radiEsc) / 2.0;
+  zfar  = 2 * d + radiEsc;
+  fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f; 
 }
 
 void MyGLWidget::paintGL () 
@@ -430,18 +435,7 @@ void MyGLWidget::calculaCapsaModel ()
   dy = maxy - miny;
   dz = maxz - minz;
   radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
-
-  OBS = glm::vec3(0.0, 0, 1.5 * radiEsc);
-  float d = 0;
-  for (int i = 0; i < 3; i += 1){
-    d = d + (OBS[i] - VRP[i]) * (OBS[i] - VRP[i]); //vectores en mayusculas
-  }
-  d     = sqrt(d);
-  znear = (d - radiEsc) / 2.0;
-  zfar  = 2 * d + radiEsc;
-  fovi  = 2.0 * asin(radiEsc / d); // (float)M_PI / 2.0f;
-  fov   = fovi;
-  emit fovCanviat((int)fov * 100);
+  radiEscDependent ();
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent* event) 

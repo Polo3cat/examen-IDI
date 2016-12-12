@@ -45,6 +45,7 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
     void calculaCapsaModel ();
     void modelTransformaCow ();
     void modelTransformaCow2 ();
+    void radiEscDependent ();
 
     // VAO i VBO names
     GLuint VAO_Patr, VBO_PatrPos, VBO_PatrNorm, VBO_PatrMatamb, VBO_PatrMatdiff, VBO_PatrMatspec, VBO_PatrMatshin;
