@@ -349,9 +349,9 @@ void MyGLWidget::modelTransformaCow ()
   glm::mat4 TG(1.f);
   float rotacio;
   TG = glm::scale(TG, glm::vec3(escala, escala, escala));
-  rotacio  = 90.0f * M_PI / 180.0f; 
+  rotacio  = -90.0f * M_PI / 180.0f; 
   TG = glm::rotate(TG, rotacio, glm::vec3(1, 0, 0));
-  TG = glm::rotate(TG, rotacio, glm::vec3(0, 1, 0));
+  TG = glm::rotate(TG, rotacio, glm::vec3(0, 0, 1));
   TG = glm::translate(TG, -centrePatr);
 
   glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
@@ -360,9 +360,13 @@ void MyGLWidget::modelTransformaCow ()
 void MyGLWidget::modelTransformaCow2 ()
 {
   glm::mat4 TG(1.f);
+  float rotacio;
   TG = glm::scale(TG, glm::vec3(escala, escala, escala));
+  rotacio  = -90.0f * M_PI / 180.0f; 
+  TG = glm::rotate(TG, rotacio, glm::vec3(1, 0, 0));
+  TG = glm::rotate(TG, rotacio, glm::vec3(0, 0, 1));
   TG = glm::translate(TG, -centrePatr);
-
+  TG = glm::translate(TG, vecAlturaPat);
 
   glUniformMatrix4fv (transLoc, 1, GL_FALSE, &TG[0][0]);
 }
@@ -419,23 +423,22 @@ void MyGLWidget::calculaCapsaModel ()
     escala = 2 / (maxy-miny);
     alturaPat = maxy-miny;
     vecAlturaPat[0] = 0.0; 
-    vecAlturaPat[1] = maxy-miny; 
+    vecAlturaPat[1] = alturaPat; 
     vecAlturaPat[2] = 0.0;
+    float dx, dy, dz;
+    dx = maxx - minx;
+    dy = maxy - miny;
+    dz = maxz - minz;
+    radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
+    radiEscDependent ();
     
   } else {
     escala = 2 / (maxz-minz);
     alturaPat = maxz-minz;
     vecAlturaPat[0] = 0.0; 
-    vecAlturaPat[1] = maxz-minz; 
-    vecAlturaPat[2] = 0.0;
+    vecAlturaPat[1] = 0.0; 
+    vecAlturaPat[2] = alturaPat;
   }
-
-  float dx, dy, dz;
-  dx = maxx - minx;
-  dy = maxy - miny;
-  dz = maxz - minz;
-  radiEsc = sqrt(dx * dx + dy * dy + dz * dz) / 2;
-  radiEscDependent ();
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent* event) 
