@@ -30,7 +30,10 @@ public:
     MyGLWidget *widget;
     QVBoxLayout *verticalLayout;
     QPushButton *pushButton_2;
+    QPushButton *pushButton_4;
+    QPushButton *pushButton_5;
     QSlider *verticalSlider;
+    QPushButton *pushButton_3;
     QPushButton *pushButton;
 
     void setupUi(QWidget *MyForm)
@@ -57,18 +60,36 @@ public:
 
         verticalLayout->addWidget(pushButton_2);
 
+        pushButton_4 = new QPushButton(MyForm);
+        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+
+        verticalLayout->addWidget(pushButton_4);
+
+        pushButton_5 = new QPushButton(MyForm);
+        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
+
+        verticalLayout->addWidget(pushButton_5);
+
         verticalSlider = new QSlider(MyForm);
         verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
         verticalSlider->setMouseTracking(false);
         verticalSlider->setLayoutDirection(Qt::LeftToRight);
-        verticalSlider->setMinimum(31);
-        verticalSlider->setMaximum(314);
+        verticalSlider->setMinimum(1);
+        verticalSlider->setMaximum(180);
         verticalSlider->setSingleStep(1);
+        verticalSlider->setPageStep(1);
+        verticalSlider->setValue(1);
+        verticalSlider->setTracking(true);
         verticalSlider->setOrientation(Qt::Vertical);
         verticalSlider->setInvertedAppearance(false);
         verticalSlider->setTickPosition(QSlider::NoTicks);
 
         verticalLayout->addWidget(verticalSlider, 0, Qt::AlignHCenter);
+
+        pushButton_3 = new QPushButton(MyForm);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+
+        verticalLayout->addWidget(pushButton_3);
 
         pushButton = new QPushButton(MyForm);
         pushButton->setObjectName(QStringLiteral("pushButton"));
@@ -78,7 +99,7 @@ public:
         sizePolicy1.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
         pushButton->setSizePolicy(sizePolicy1);
 
-        verticalLayout->addWidget(pushButton);
+        verticalLayout->addWidget(pushButton, 0, Qt::AlignHCenter);
 
 
         horizontalLayout->addLayout(verticalLayout);
@@ -89,6 +110,8 @@ public:
         QObject::connect(pushButton, SIGNAL(clicked()), MyForm, SLOT(close()));
         QObject::connect(verticalSlider, SIGNAL(valueChanged(int)), widget, SLOT(canviarFov(int)));
         QObject::connect(widget, SIGNAL(fovCanviat(int)), verticalSlider, SLOT(setValue(int)));
+        QObject::connect(pushButton_3, SIGNAL(clicked()), widget, SLOT(resetFov()));
+        QObject::connect(pushButton_5, SIGNAL(clicked()), widget, SLOT(resetView()));
 
         QMetaObject::connectSlotsByName(MyForm);
     } // setupUi
@@ -97,6 +120,9 @@ public:
     {
         MyForm->setWindowTitle(QApplication::translate("MyForm", "Form", 0));
         pushButton_2->setText(QApplication::translate("MyForm", "Canviar Model", 0));
+        pushButton_4->setText(QApplication::translate("MyForm", "Canviar Parella", 0));
+        pushButton_5->setText(QApplication::translate("MyForm", "Reset View", 0));
+        pushButton_3->setText(QApplication::translate("MyForm", "Reset FOV", 0));
         pushButton->setText(QApplication::translate("MyForm", "&Sortir", 0));
     } // retranslateUi
 

@@ -35,7 +35,7 @@ void MyGLWidget::initializeGL ()
   VRP = glm::vec3(0.0, 0.0, 0.0);
   VUP = glm::vec3(0.0, 1.0, 0.0);
   fov   = fovi;
-  emit fovCanviat((int)fov * 100);
+  emit fovCanviat((int)(fov * 180 / M_PI));
   aspect   = 1.0;
   angulo = 0.0;
   deltaA = M_PI / 180.0;
@@ -108,7 +108,7 @@ void MyGLWidget::resizeGL (int w, int h)
   if (rViewport < 1.0) {
     fov = 2.0 * atan(tan(fovi/2.0)/rViewport);
   }
-  emit fovCanviat((int)fov*100);
+  emit fovCanviat((int)(fov * 180 / M_PI));
   glViewport(0, 0, w, h);
   projectTransform ();
 }
@@ -509,10 +509,10 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *e)
       }
       if (fov > (float)M_PI)
         fov = (float)M_PI;
-      else if (fov < (float)M_PI/10) 
-        fov = (float)M_PI/10;
+      else if (fov < (float)M_PI/180) 
+        fov = (float)M_PI/180;
       projectTransform();
-      emit fovCanviat((int)fov * 100);
+      emit fovCanviat((int)(fov * 180 / M_PI));
   }
 
   xClick = e->x();
@@ -589,8 +589,27 @@ void MyGLWidget::canviarModel()
 void MyGLWidget::canviarFov(int sfov) 
 {
   makeCurrent();
-  fov = (float)sfov / 100.0f;
+  fov = (float)sfov * M_PI / 180;
   projectTransform();
   update();
 }
 
+void MyGLWidget::resetFov()
+{
+  makeCurrent();
+  fov = fovi;
+  emit fovCanviat((int)(fov * 180 / M_PI));
+  projectTransform();
+  update();
+}
+
+void MyGLWidget::resetView ()
+{
+  makeCurrent();
+  psi = 0.0;
+  theta = 0.0;
+  phi = 0.0;
+  angleY = 0.0;
+  viewTransform();
+  update();
+}

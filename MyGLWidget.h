@@ -100,6 +100,8 @@ class MyGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 public slots:
     void canviarModel();
     void canviarFov(int sfov);
+    void resetFov();
+    void resetView();
 
 signals:
     void fovCanviat(int wfov);
